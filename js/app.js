@@ -1,5 +1,5 @@
 import { getCatalog } from './data.js';
-import { filterProducts } from './store.js';
+import { filterProducts, normalizeBag, changeBag, bagTotal, stockFor } from './store.js';
 
 const $ = (selector) => document.querySelector(selector);
 const money = (amount) => new Intl.NumberFormat('es-CO', {
@@ -89,3 +89,112 @@ document.addEventListener('click', (event) => {
 window.matchMedia('(min-width: 621px)').addEventListener('change', (event) => { if (event.matches) setMenu(false); });
 
 updateCatalog();
+
+// Persistir solo preferencias y referencias de productos, nunca datos del formulario.
+function readStorage(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
+}
+function saveStorage(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+  catch { return false; }
+}
+
+let bag = normalizeBag(readStorage('aura.bag.v1', []), catalog.products);
+let activeProduct = null;
+let selectedSize = null;
+let toastTimer;
+
+function notify(message) {
+  clearTimeout(toastTimer);
+  $('#toast').textContent = message;
+  $('#toast').classList.add('visible');
+  toastTimer = setTimeout(() => $('#toast').classList.remove('visible'), 3800);
+}
+
+function renderBag() {
+  const count = bag.reduce((total, item) => total + item.quantity, 0);
+  $('#bag-count').textContent = count;
+  $('#bag-toggle').setAttribute('aria-label', `Abrir bolsa, ${count} ${count === 1 ? 'par' : 'pares'}`);
+  $('#bag-items').innerHTML = bag.length ? bag.map((item) => {
+    const product = catalog.products.find((product) => product.id === item.productId);
+    return `<article class="bag-item" data-line="${item.productId}" data-size="${item.size}">
+      <img src="${product.image}" alt="${escapeHTML(product.alt)}" width="95" height="95">
+      <div><h3>${escapeHTML(brandName(product.brandId))} ${escapeHTML(product.name)}</h3><p>Talla EU ${item.size} · ${money(product.price)}</p>
+      <div class="quantity-row"><button type="button" data-delta="-1" aria-label="Quitar un par de ${escapeHTML(product.name)}, talla ${item.size}">−</button><span aria-label="Cantidad">${item.quantity}</span><button type="button" data-delta="1" aria-label="Añadir un par de ${escapeHTML(product.name)}, talla ${item.size}" ${item.quantity >= stockFor(catalog.products, item.productId, item.size) ? 'disabled' : ''}>+</button><button type="button" class="remove-item" data-remove aria-label="Eliminar ${escapeHTML(product.name)}, talla ${item.size}">Eliminar</button></div></div>
+    </article>`;
+  }).join('') : '<div class="bag-empty"><h3>Hay espacio para tu próximo favorito.</h3><p>Explora la selección y añade un par en tu talla.</p><button type="button" class="button button-dark" data-close="bag-dialog">Seguir explorando ↗</button></div>';
+  $('#bag-summary').innerHTML = bag.length ? `<p class="bag-total"><span>Subtotal</span><span>${money(bagTotal(bag, catalog.products))}</span></p><p class="bag-help">Valores simulados en COP. Puedes consultar un modelo por solicitud. No se realizan pagos ni envíos.</p><button id="bag-request" class="button button-dark" type="button">Consultar el primer par <span aria-hidden="true">↗</span></button>` : '';
+}
+
+function persistBag() {
+  const saved = saveStorage('aura.bag.v1', bag);
+  renderBag();
+  if (!saved) notify('Tu bolsa funciona en esta sesión. El navegador no permitió guardarla.');
+  return saved;
+}
+
+function openProduct(id) {
+  activeProduct = catalog.products.find((product) => product.id === id);
+  if (!activeProduct) return;
+  selectedSize = null;
+  const product = activeProduct;
+  $('#product-detail').innerHTML = `<div class="detail-layout"><div class="detail-image"><img src="${product.image}" alt="${escapeHTML(product.alt)}" width="700" height="500"></div><div class="detail-copy">
+    <p class="eyebrow">${escapeHTML(brandName(product.brandId))} · ${escapeHTML(product.tag)}</p><h2 id="detail-title">${escapeHTML(product.name)}</h2><p>${escapeHTML(product.color)} · Ref. ${product.sku}</p><p>${escapeHTML(product.description)}</p><p class="detail-price">${money(product.price)} <small>COP</small></p>
+    <fieldset class="size-options"><legend>Elige tu talla (EU)</legend><div class="size-grid">${product.sizes.map((item) => `<button class="size-button" type="button" data-size-choice="${item.size}" aria-pressed="false" aria-label="Talla ${item.size}${!item.stock ? ', agotada' : ''}" ${!item.stock ? 'disabled' : ''}>${item.size}</button>`).join('')}</div></fieldset>
+    <p id="detail-stock" class="field-hint">Disponibilidad de demostración. Las tallas tachadas están agotadas.</p><p id="detail-error" class="field-error detail-error" role="status"></p>
+    <button id="add-to-bag" class="button button-dark" type="button">Añadir a la bolsa <span aria-hidden="true">+</span></button>
+  </div></div>`;
+  $('#product-dialog').showModal();
+}
+
+$('#product-grid').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-product]');
+  if (button) openProduct(button.dataset.product);
+});
+$('#product-detail').addEventListener('click', (event) => {
+  const sizeButton = event.target.closest('[data-size-choice]');
+  if (sizeButton) {
+    selectedSize = Number(sizeButton.dataset.sizeChoice);
+    document.querySelectorAll('[data-size-choice]').forEach((button) => button.setAttribute('aria-pressed', String(button === sizeButton)));
+    $('#detail-error').textContent = '';
+    const stock = stockFor(catalog.products, activeProduct.id, selectedSize);
+    $('#detail-stock').textContent = `${stock} ${stock === 1 ? 'par disponible' : 'pares disponibles'} en talla EU ${selectedSize}. Inventario simulado.`;
+  }
+  if (event.target.closest('#add-to-bag')) {
+    const result = changeBag(bag, catalog.products, activeProduct.id, selectedSize, 1);
+    if (result.error) { $('#detail-error').textContent = result.error; return; }
+    bag = result.bag;
+    const saved = persistBag();
+    $('#product-dialog').close();
+    if (saved) notify(`${activeProduct.name}, talla ${selectedSize}, añadido a tu bolsa.`);
+  }
+});
+$('#bag-toggle').addEventListener('click', () => { renderBag(); $('#bag-dialog').showModal(); });
+document.addEventListener('click', (event) => {
+  const closeButton = event.target.closest('[data-close]');
+  if (closeButton) document.getElementById(closeButton.dataset.close).close();
+});
+document.querySelectorAll('dialog').forEach((dialog) => dialog.addEventListener('click', (event) => {
+  if (event.target !== dialog) return;
+  const rect = dialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+}));
+$('#bag-items').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-delta], [data-remove]');
+  if (!button) return;
+  const line = button.closest('[data-line]');
+  const productId = line.dataset.line;
+  const size = Number(line.dataset.size);
+  if (button.hasAttribute('data-remove')) bag = bag.filter((item) => !(item.productId === productId && item.size === size));
+  else {
+    const result = changeBag(bag, catalog.products, productId, size, Number(button.dataset.delta));
+    if (result.error) { notify(result.error); return; }
+    bag = result.bag;
+  }
+  persistBag();
+  const remaining = [...document.querySelectorAll('#bag-items [data-line]')].find((item) => item.dataset.line === productId && Number(item.dataset.size) === size);
+  const nextFocus = remaining?.querySelector(`[data-delta="${button.dataset.delta}"]:not(:disabled)`) || remaining?.querySelector('button') || $('#bag-dialog [data-close]');
+  nextFocus.focus();
+});
+renderBag();
