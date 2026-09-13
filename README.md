@@ -2,8 +2,8 @@
 
 **Autor:** Santiago Alcaraz.  
 **Curso:** Desarrollo Web · 2026-2  
-**Repositorio GitHub público:** PENDIENTE — pega la URL real después de publicar.  
-**Sitio Vercel:** PENDIENTE — pega la URL pública real después de desplegar.
+**Repositorio GitHub público:** [text](https://github.com/SantiagoAlcaraz1101/aura-store.git)
+**Sitio Vercel:** [text](https://aura-store-azure.vercel.app/)
 
 ## El proyecto
 
