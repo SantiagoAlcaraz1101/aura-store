@@ -15,6 +15,25 @@ const catalog = await getCatalog();
 const brandName = (id) => catalog.brands.find((brand) => brand.id === id)?.name ?? '';
 const categoryName = (id) => catalog.categories.find((category) => category.id === id)?.name ?? '';
 
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+let themePreference = readStorage('aura.theme.v1', null);
+if (!['light', 'dark'].includes(themePreference)) themePreference = null;
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const dark = theme === 'dark';
+  $('#theme-toggle').setAttribute('aria-pressed', String(dark));
+  $('#theme-toggle').setAttribute('aria-label', dark ? 'Activar modo claro' : 'Activar modo oscuro');
+}
+applyTheme(themePreference ?? (systemTheme.matches ? 'dark' : 'light'));
+$('#theme-toggle').addEventListener('click', () => {
+  themePreference = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(themePreference);
+  if (!saveStorage('aura.theme.v1', themePreference)) notify('El tema cambió. El navegador no permitió guardar la preferencia.');
+});
+systemTheme.addEventListener('change', (event) => {
+  if (!themePreference) applyTheme(event.matches ? 'dark' : 'light');
+});
+
 function renderProducts(products) {
   $('#product-grid').innerHTML = products.map((product) => `
     <article class="product-card">
