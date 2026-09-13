@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aura Store: una selección de sneakers con identidad. Explora modelos, encuentra tu talla y arma tu próxima rotación. Proyecto académico.">
+  <meta name="theme-color" content="#d5fa39">
+  <title>Aura Store — Tu próximo par favorito</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="announcement"><span>BUENOS PARES. MEJORES HISTORIAS.</span><span>COLOMBIA · PRECIOS EN COP</span></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#inicio" aria-label="Aura Store, inicio">aura<span class="logo-star" aria-hidden="true">✳</span><span class="logo-sub">STORE</span></a>
+      <nav id="main-nav" class="main-nav" aria-label="Navegación principal">
+        <a href="#catalogo">Sneakers</a><a href="#seleccion">El criterio Aura</a><a href="#asesoria">Encuentra tu par <span aria-hidden="true">↗</span></a>
+      </nav>
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-button" type="button" aria-label="Activar modo oscuro" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
+        <button id="bag-toggle" class="bag-toggle" type="button" aria-label="Abrir bolsa, 0 pares"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg><span class="bag-label">Bolsa</span><span id="bag-count" class="bag-count">0</span></button>
+        <button id="menu-toggle" class="icon-button menu-toggle" type="button" aria-label="Abrir menú" aria-controls="main-nav" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main id="contenido">
+    <section id="inicio" class="hero container" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span class="small-star" aria-hidden="true">✳</span> PARA LOS QUE CAMINAN DIFERENTE</p>
+        <h1 id="hero-title">Tu próximo<br>par <span class="serif-word">favorito.</span></h1>
+        <p class="hero-description">Los clásicos que conoces. Los pares que te definen.<br class="desktop-break"> Una selección con personalidad, igual que tú.</p>
+        <a class="button button-dark" href="#catalogo">Explorar sneakers <span aria-hidden="true">↗</span></a>
+        <div class="hero-footnote"><span class="line-mark" aria-hidden="true"></span> MENOS RUIDO. MÁS ESTILO.</div>
+      </div>
+      <div class="hero-visual">
+        <span class="hero-outline" aria-hidden="true">AURA</span>
+        <span class="vertical-label" aria-hidden="true">THE EVERYDAY ICONS / VOL. 01</span>
+        <img class="hero-shoe" src="assets/images/jordan-green.webp" width="1000" height="714" alt="Air Jordan 1 High con paneles verdes, blancos y negros, vista lateral" fetchpriority="high">
+        <div class="hero-product"><span><small>EL PAR EN FOCO</small><strong>Air Jordan 1 Retro High</strong><span>Lucky Green / Un clásico, otra energía.</span></span><a href="#catalogo" class="round-link" aria-label="Explorar el catálogo de sneakers">↗</a></div>
+        <span class="hero-edition">SELECCIÓN 001 <span aria-hidden="true">/</span> AURA STORE</span>
+      </div>
+    </section>
+    <div class="brand-strip" aria-label="Marcas en nuestra selección"><div class="container brand-inner"><span class="brand-strip-label">LOS ÍCONOS,<br>EN UN SOLO LUGAR.</span><span class="brand-word nike-word">NIKE</span><span class="brand-word adidas-word">adidas</span><span class="brand-word jordan-word">JORDAN</span><span class="brand-word nb-word">new balance</span><span class="brand-word asics-word">asics</span></div></div>
+    <section id="catalogo" class="catalog-section container" aria-labelledby="catalog-title">
+      <div class="section-heading"><div><p class="eyebrow">LA ROTACIÓN EMPIEZA AQUÍ</p><h2 id="catalog-title">Pares con <span class="serif-word">carácter.</span></h2></div><p>Encuentra el que va contigo.<br>Y llévalo a tu manera.</p></div>
+      <div class="catalog-toolbar"><div id="category-filters" class="filter-chips" role="group" aria-label="Filtrar por categoría"><button class="chip active" data-category="all" type="button" aria-pressed="true">Todos los pares</button></div><a class="text-link" href="#guia-tallas">Guía de tallas <span aria-hidden="true">↗</span></a></div>
+      <div class="catalog-controls">
+        <div class="search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><label for="search" class="sr-only">Buscar sneakers</label><input id="search" type="search" placeholder="Busca tu próximo par…" maxlength="80"></div>
+        <div class="select-control"><label for="brand-filter">Marca</label><select id="brand-filter"><option value="all">Todas las marcas</option></select></div>
+        <div class="select-control"><label for="sort">Ordenar</label><select id="sort"><option value="featured">Selección Aura</option><option value="price-asc">Menor precio</option><option value="price-desc">Mayor precio</option><option value="name">Nombre A–Z</option></select></div>
+      </div>
+      <div class="results-bar"><p id="result-count" role="status" aria-live="polite">Cargando selección…</p><button id="reset-filters" class="text-button" type="button">Limpiar filtros</button></div>
+      <div id="product-grid" class="product-grid"></div>
+      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">↗</span><h3>Tu par está por aparecer.</h3><p>No hay resultados con estos filtros. Prueba otra marca o limpia la búsqueda.</p><button id="empty-reset" class="button button-dark" type="button">Ver todos los pares</button></div>
+      <noscript><p>Activa JavaScript para explorar el catálogo, elegir tallas y preparar una solicitud.</p></noscript>
+      <p class="catalog-note">Selección de demostración · Precios e inventario simulados en pesos colombianos.</p>
+    </section>
+    <section id="seleccion" class="manifesto" aria-labelledby="manifesto-title"><div class="container manifesto-inner">
+      <div><p class="eyebrow">EL CRITERIO AURA</p><h2 id="manifesto-title">No es tener más.<br>Es elegir <span class="serif-word">mejor.</span></h2><p>Un buen par no necesita explicaciones. Elegimos siluetas que tienen historia y espacio en tu día a día. De la cancha a la calle, de tu primer par a tu próxima obsesión.</p><a class="text-link" href="#asesoria">Armemos tu próxima rotación <span aria-hidden="true">↗</span></a></div>
+      <ol class="principles"><li><span>01</span><div><h3>Identidad antes que tendencia</h3><p>Clásicos de cancha, esenciales urbanos y formas de running. Un punto de partida para tu propio estilo.</p></div></li><li><span>02</span><div><h3>Tu talla, sin adivinar</h3><p>Consulta las tallas de cada modelo antes de añadirlo. La bolsa conserva el par y la talla que elegiste.</p></div></li><li><span>03</span><div><h3>Cada detalle a la vista</h3><p>Color, referencia, precio y disponibilidad. La información que necesitas para comparar con calma.</p></div></li></ol>
+    </div></section>
+    <section id="asesoria" class="request-section container" aria-labelledby="request-title">
+      <div class="request-copy"><p class="eyebrow">HABLEMOS DE TU PRÓXIMO PAR</p><h2 id="request-title">Buen estilo.<br><span class="serif-word">Buena elección.</span></h2><p>Elige un modelo y cuéntanos cómo lo vas a llevar. Prepara una solicitud con tu talla y los detalles que importan.</p><p class="demo-note">Esta es una tienda académica. La solicitud se valida en tu navegador: no se envía, no reserva inventario y no genera cobros. Usa datos de ejemplo.</p>
+        <details id="guia-tallas"><summary>Antes de elegir tu talla <span aria-hidden="true">+</span></summary><p>Las tallas del catálogo usan el sistema europeo (EU). Revisa la etiqueta de un par de la misma marca que ya te quede bien. La equivalencia puede variar por modelo; no aplicamos una conversión universal. Solo podrás seleccionar tallas con disponibilidad en esta demo.</p></details>
+      </div>
+      <form id="request-form" class="request-form" novalidate>
+        <div class="form-heading"><h3>Tu solicitud</h3><span>Todos los campos son obligatorios</span></div>
+        <div class="form-row"><div class="field"><label for="customer-name">Nombre</label><input id="customer-name" name="name" autocomplete="name" placeholder="Tu nombre" required minlength="3" maxlength="80" aria-describedby="name-error"><span id="name-error" class="field-error"></span></div><div class="field"><label for="customer-email">Correo electrónico</label><input id="customer-email" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required maxlength="120" aria-describedby="email-error"><span id="email-error" class="field-error"></span></div></div>
+        <div class="field"><label for="customer-city">Ciudad en Colombia</label><input id="customer-city" name="city" autocomplete="address-level2" placeholder="Ej. Bogotá" required minlength="3" maxlength="80" aria-describedby="city-error"><span id="city-error" class="field-error"></span></div>
+        <div class="form-row"><div class="field"><label for="request-product">El par que te interesa</label><select id="request-product" name="productId" required aria-describedby="productId-error"><option value="">Selecciona un modelo</option></select><span id="productId-error" class="field-error"></span></div><div class="field"><label for="request-size">Tu talla (EU)</label><select id="request-size" name="size" required aria-describedby="size-error"><option value="">Primero elige un modelo</option></select><span id="size-error" class="field-error"></span></div></div>
+        <div class="field"><label for="request-message">¿Qué tienes en mente?</label><textarea id="request-message" name="message" rows="3" placeholder="Cuéntanos sobre tu estilo, el uso que le darías o tus dudas sobre el par." required minlength="20" maxlength="600" aria-describedby="message-hint message-error"></textarea><span id="message-hint" class="field-hint">Entre 20 y 600 caracteres.</span><span id="message-error" class="field-error"></span></div>
+        <div class="field"><div class="checkbox-field"><input id="request-consent" name="consent" type="checkbox" required aria-describedby="consent-error"><label for="request-consent">Entiendo que esta solicitud es una simulación y no se enviará.</label></div><span id="consent-error" class="field-error"></span></div>
+        <button class="button button-dark submit-button" type="submit">Preparar solicitud <span aria-hidden="true">↗</span></button><p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-top"><a class="logo" href="#inicio" aria-label="Aura Store, volver al inicio">aura<span class="logo-star" aria-hidden="true">✳</span><span class="logo-sub">STORE</span></a><p>Buenos pares. A tu manera.</p><a href="#inicio" class="text-link">Volver arriba ↑</a></div><div class="container footer-bottom"><p>© 2026 Aura Store · Proyecto académico, sin ventas reales.</p><p>Sin afiliación con las marcas mostradas.</p><a href="docs/IMAGENES.md">Créditos de imágenes</a></div></footer>
+  <dialog id="product-dialog" class="product-dialog" aria-labelledby="detail-title"><button class="dialog-close icon-button" type="button" data-close="product-dialog" aria-label="Cerrar detalle">×</button><div id="product-detail"></div></dialog>
+  <dialog id="bag-dialog" class="bag-dialog" aria-labelledby="bag-title"><div class="dialog-heading"><div><p class="eyebrow">TU PRÓXIMA ROTACIÓN</p><h2 id="bag-title">Tu bolsa.</h2></div><button class="dialog-close icon-button" type="button" data-close="bag-dialog" aria-label="Cerrar bolsa">×</button></div><div id="bag-items"></div><div id="bag-summary"></div></dialog>
+  <p id="toast" class="toast" role="status" aria-live="polite"></p>
+</body>
+</html>
