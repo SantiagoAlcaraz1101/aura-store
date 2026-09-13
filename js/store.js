@@ -49,3 +49,20 @@ export function changeBag(bag, products, productId, size, delta) {
 export function bagTotal(bag, products) {
   return bag.reduce((total, item) => total + (products.find((product) => product.id === item.productId)?.price ?? 0) * item.quantity, 0);
 }
+
+export function validateRequest(values, products) {
+  const errors = {};
+  const name = String(values.name ?? '').trim();
+  const email = String(values.email ?? '').trim();
+  const city = String(values.city ?? '').trim();
+  const message = String(values.message ?? '').trim();
+  if (name.length < 3 || name.length > 80) errors.name = 'Escribe un nombre de entre 3 y 80 caracteres.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 120) errors.email = 'Escribe un correo válido, por ejemplo nombre@correo.com.';
+  if (city.length < 3 || city.length > 80) errors.city = 'Escribe tu ciudad con entre 3 y 80 caracteres.';
+  const product = products.find((item) => item.id === values.productId);
+  if (!product) errors.productId = 'Selecciona un modelo del catálogo.';
+  if (!values.size || !stockFor(products, values.productId, values.size)) errors.size = 'Selecciona una talla disponible para este modelo.';
+  if (message.length < 20 || message.length > 600) errors.message = 'Cuéntanos un poco más: escribe entre 20 y 600 caracteres.';
+  if (values.consent !== true) errors.consent = 'Confirma que entiendes que esta solicitud es una simulación.';
+  return errors;
+}

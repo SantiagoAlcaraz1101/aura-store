@@ -1,5 +1,5 @@
 import { getCatalog } from './data.js';
-import { filterProducts, normalizeBag, changeBag, bagTotal, stockFor } from './store.js';
+import { filterProducts, normalizeBag, changeBag, bagTotal, stockFor, validateRequest } from './store.js';
 
 const $ = (selector) => document.querySelector(selector);
 const money = (amount) => new Intl.NumberFormat('es-CO', {
@@ -198,3 +198,92 @@ $('#bag-items').addEventListener('click', (event) => {
   nextFocus.focus();
 });
 renderBag();
+
+// Formulario: una solicitud por modelo, sin servidor ni almacenamiento de datos personales.
+const form = $('#request-form');
+const touchedFields = new Set();
+let submitted = false;
+const fieldNames = ['name', 'email', 'city', 'productId', 'size', 'message', 'consent'];
+
+$('#request-product').insertAdjacentHTML('beforeend', catalog.products.map((product) =>
+  `<option value="${product.id}">${escapeHTML(brandName(product.brandId))} ${escapeHTML(product.name)}</option>`).join(''));
+
+function updateRequestSizes() {
+  const product = catalog.products.find((item) => item.id === $('#request-product').value);
+  $('#request-size').innerHTML = `<option value="">${product ? 'Selecciona tu talla' : 'Primero elige un modelo'}</option>` + (product?.sizes.map((item) =>
+    `<option value="${item.size}" ${item.stock ? '' : 'disabled'}>EU ${item.size}${item.stock ? '' : ' — Agotada'}</option>`).join('') ?? '');
+}
+
+function readForm() {
+  const values = Object.fromEntries(new FormData(form));
+  values.consent = form.elements.namedItem('consent').checked;
+  return values;
+}
+
+function showFieldError(name, message) {
+  const field = form.elements.namedItem(name);
+  document.getElementById(`${name}-error`).textContent = message || '';
+  if (message) field.setAttribute('aria-invalid', 'true');
+  else field.removeAttribute('aria-invalid');
+}
+
+function refreshErrors() {
+  const errors = validateRequest(readForm(), catalog.products);
+  fieldNames.forEach((name) => {
+    if (submitted || touchedFields.has(name)) showFieldError(name, errors[name]);
+  });
+  return errors;
+}
+
+function clearFormStatus() {
+  $('#form-status').textContent = '';
+  $('#form-status').classList.remove('success');
+}
+
+$('#request-product').addEventListener('change', () => {
+  updateRequestSizes();
+  if (submitted || touchedFields.has('size')) refreshErrors();
+});
+form.addEventListener('focusout', (event) => {
+  if (!fieldNames.includes(event.target.name)) return;
+  touchedFields.add(event.target.name);
+  refreshErrors();
+});
+form.addEventListener('input', () => { clearFormStatus(); refreshErrors(); });
+form.addEventListener('change', () => { clearFormStatus(); refreshErrors(); });
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  submitted = true;
+  clearFormStatus();
+  const errors = refreshErrors();
+  const invalid = fieldNames.filter((name) => errors[name]);
+  if (invalid.length) {
+    $('#form-status').textContent = `Revisa ${invalid.length} ${invalid.length === 1 ? 'campo marcado' : 'campos marcados'} antes de continuar.`;
+    form.elements.namedItem(invalid[0]).focus();
+    return;
+  }
+  const values = readForm();
+  const product = catalog.products.find((item) => item.id === values.productId);
+  // Modelo conceptual del pedido que después enviaría POST /api/orders.
+  // Estos objetos viven únicamente durante esta ejecución; no se transmiten.
+  const customer = { id: crypto.randomUUID(), name: values.name.trim(), email: values.email.trim(), city: values.city.trim() };
+  const order = {
+    id: crypto.randomUUID(), customerId: customer.id, status: 'demo', createdAt: new Date().toISOString(),
+    items: [{ productId: product.id, size: Number(values.size), quantity: 1, unitPrice: product.price }],
+    message: values.message.trim(),
+  };
+  $('#form-status').textContent = `Solicitud de ejemplo ${order.id.slice(0, 8).toUpperCase()} preparada: ${product.name}, talla EU ${values.size}, ${money(product.price)}. No se ha enviado, cobrado ni reservado inventario. Puedes modificar los campos para preparar otra.`;
+  $('#form-status').classList.add('success');
+});
+
+$('#bag-summary').addEventListener('click', (event) => {
+  if (!event.target.closest('#bag-request') || !bag.length) return;
+  $('#request-product').value = bag[0].productId;
+  updateRequestSizes();
+  $('#request-size').value = String(bag[0].size);
+  clearFormStatus();
+  refreshErrors();
+  $('#bag-dialog').close();
+  $('#asesoria').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  $('#customer-name').focus({ preventScroll: true });
+});
