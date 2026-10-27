@@ -10,3 +10,6 @@ Desktop.ini
 .tmp/
 .vscode/
 coverage/
+.next/
+out/
+*.tsbuildinfo
