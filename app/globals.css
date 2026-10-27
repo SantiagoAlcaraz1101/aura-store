@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@source "../src";
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-card: #eeeeea;
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-acid: #d5fa39;
+  --color-dark: #191b18;
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-sans: Arial, "Helvetica Neue", sans-serif;
+}
+:root { color-scheme: light; --paper: #fcfcf9; --surface: #f2f2ee; --ink: #191b18; --muted: #65685f; --line: #dcded5; --danger: #b12a24; --success: #246137; }
+[data-theme="dark"] { color-scheme: dark; --paper: #171b17; --surface: #20261f; --ink: #f3f5ec; --muted: #b3bbaa; --line: #414a3b; --danger: #ffaba2; --success: #bce7a8; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+body { @apply m-0 bg-paper font-sans text-ink; line-height: 1.6; }
+button, select, summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+:focus-visible { outline: 3px solid #708524; outline-offset: 4px; }
+[data-theme="dark"] :focus-visible { outline-color: #d5fa39; }
+input, select, textarea { min-width: 0; }
+.container-shell { @apply mx-auto w-[calc(100%-40px)] max-w-[1320px] md:w-[calc(100%-64px)] xl:w-[calc(100%-96px)]; }
+.eyebrow { @apply text-[11px] font-bold uppercase tracking-[.14em]; }
+.section-title { @apply text-[clamp(2.4rem,4.3vw,3.8rem)] font-semibold leading-[1.08] tracking-[-.055em]; }
+em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+.control { @apply min-h-12 w-full rounded border border-line bg-paper px-3 py-2 text-base text-ink; }
+.chip { @apply min-h-11 rounded-full border border-line px-4 py-2 text-sm transition hover:bg-surface; }
+.chip.active { @apply border-ink bg-ink text-paper; }
+.aura-dialog { @apply fixed inset-0 m-auto max-h-[calc(100dvh-40px)] overflow-y-auto rounded-lg border border-line bg-paper p-5 text-ink md:p-8; }
+.aura-dialog::backdrop { background: #11160e99; backdrop-filter: blur(4px); }
+body:has(dialog[open]) { overflow: hidden; }
+.hero-outline { color: transparent; -webkit-text-stroke: 1px #92b52a; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }

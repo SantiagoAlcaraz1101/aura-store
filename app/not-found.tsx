@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound() { return <section className="container-shell py-24 text-center"><p className="eyebrow">404 · FUERA DE LA ROTACIÓN</p><h1 className="my-6 text-5xl font-semibold">Este camino no lleva a tu par.</h1><p className="mb-8 text-muted">La página que buscas no existe o cambió de dirección.</p><Link className="rounded bg-ink px-6 py-4 text-paper" href="/">Volver a Aura Store ↗</Link></section>; }
