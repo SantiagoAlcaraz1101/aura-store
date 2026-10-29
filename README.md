@@ -61,7 +61,7 @@ La cookie es legible por JavaScript para enviar ese encabezado. Usa SameSite=Lax
 
 ## Evidencias y uso de IA
 
-Se verificaron compilación, tipos, paginación local, sesión tras refrescar, solicitud guardada, redirección de user fuera de Administración y logout. La API tiene 11 resultados de pruebas automatizadas y [CI aprobado](https://github.com/SantiagoAlcaraz1101/aura-store-api/actions/runs/40808114436). [Avances y pendientes](docs/AVANCES-PROGRAMADOS.md).
+Se verificaron compilación, tipos, paginación local, sesión tras refrescar, solicitud guardada, redirección de user fuera de Administración y logout. La API tiene 11 resultados de pruebas automatizadas y [CI aprobado](https://github.com/SantiagoAlcaraz1101/aura-store-api/actions/runs/40808114436).
 
 ![Solicitud local guardada](docs/capturas/entrega-3/solicitud-local.png)
 
@@ -69,4 +69,4 @@ Se verificaron compilación, tipos, paginación local, sesión tras refrescar, s
 
 Codex apoyó la migración, implementación, pruebas y documentación. Se corrigió el límite de contraseña por bytes, una dependencia vulnerable y la conservación de marca/categoría al editar con opciones cargadas desde la API. El autor debe revisar y poder demostrar estas decisiones; no se inventan experiencias personales ni funciones.
 
-La versión original está en `legacy/entrega-1/`, fuera de Next. Se conserva el [README personal original](docs/ENTREGA-1-README.md). El informe para la sustentación está en `docs/INFORME-SUSTENTACION.md`.
+La versión original está en `legacy/entrega-1/`, fuera de Next. Se conserva el [README personal original](docs/ENTREGA-1-README.md).
