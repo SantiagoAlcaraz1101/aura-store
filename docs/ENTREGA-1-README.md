@@ -75,7 +75,7 @@ Base factual: la interfaz se verificó a 320, 390, 768 y 1440 px, sin overflow h
 
 ### Uso de inteligencia artificial
 
-La IA fué de mucha ayuda para la primera etapa de desarrollo de **Aura Store**, Ayudó a realizar las pruebas y a mejorar la calidad de diseño de la página, llevandola a otro nivel visualmente.
+Me apoyé en IA durante la primera etapa de desarrollo de **Aura Store**, especialmente para las pruebas y para mejorar el diseño visual de la página.
 
 ## Capturas reales
 

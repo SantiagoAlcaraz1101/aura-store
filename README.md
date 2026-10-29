@@ -59,7 +59,7 @@ La cookie es legible por JavaScript para enviar ese encabezado. Usa SameSite=Lax
 
 **401:** falta una sesión válida, por ejemplo borrar un producto sin token. **403:** hay sesión pero falta permiso, por ejemplo un user intenta borrar un sneaker. Ocultar Administración no basta: la API rechaza la petición aunque se envíe manualmente.
 
-## Evidencias y uso de IA
+## Validación y decisiones de desarrollo
 
 Se verificaron compilación, tipos, paginación local, sesión tras refrescar, solicitud guardada, redirección de user fuera de Administración y logout. La API tiene 11 resultados de pruebas automatizadas y [CI aprobado](https://github.com/SantiagoAlcaraz1101/aura-store-api/actions/runs/40808114436).
 
@@ -67,6 +67,6 @@ Se verificaron compilación, tipos, paginación local, sesión tras refrescar, s
 
 **Captura Network pendiente:** debe mostrar una petición protegida real con Authorization. La imagen anterior no reemplaza esa evidencia. Las nueve secuencias del docente deben comprobarse sobre los despliegues definitivos.
 
-Codex apoyó la migración, implementación, pruebas y documentación. Se corrigió el límite de contraseña por bytes, una dependencia vulnerable y la conservación de marca/categoría al editar con opciones cargadas desde la API. El autor debe revisar y poder demostrar estas decisiones; no se inventan experiencias personales ni funciones.
+Me apoyé en IA para la migración, la implementación, las pruebas y la documentación. Entre las correcciones del proyecto están el límite de contraseña por bytes, la actualización de una dependencia vulnerable y la conservación de la marca y la categoría al editar un producto mientras se cargan sus opciones desde la API. Documento las comprobaciones realizadas y distingo las pruebas locales de las que siguen pendientes en producción.
 
 La versión original está en `legacy/entrega-1/`, fuera de Next. Se conserva el [README personal original](docs/ENTREGA-1-README.md).

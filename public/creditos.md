@@ -11,5 +11,5 @@ Fotografías de referencia consultadas el 13 de septiembre de 2026 mediante bús
 | `gel-1130.jpg` | [ASICS GEL-1130 White Pure Silver · Crepslocker](https://www.crepslocker.com/products/asics-gel-1130-white-pure-silver) |
 | `air-force.webp` | [Air Force 1 Low White · StockX](https://stockx.com/nike-air-force-1-low-white-07) |
 
-El favicon es geometría SVG original. El logotipo Aura se compone con texto y un asterisco. Los nombres de marca de la franja son texto, no archivos de logotipos oficiales. No se generaron imágenes con IA. Las descripciones de estilo y los precios de la demo son contenido creado para el proyecto; no reproducen precios actuales ni promesas de los comercios de origen.
+El favicon es geometría SVG original. El logotipo Aura se compone con texto y un asterisco. Los nombres de marca de la franja son texto, no archivos de logotipos oficiales. No utilicé imágenes generadas con IA en este proyecto. Las descripciones de estilo y los precios de la demo son contenido creado para el proyecto; no reproducen precios actuales ni promesas de los comercios de origen.
 
