@@ -1,90 +1,72 @@
 # Aura Store — sneakers con identidad
 
-**Autor:** Santiago Alcaraz.  
-**Curso:** Desarrollo Web · 2026-2  
-**Repositorio GitHub público:** [text](https://github.com/SantiagoAlcaraz1101/aura-store.git)
-**Sitio Vercel:** [text](https://aura-store-azure.vercel.app/)
-
-## El proyecto
+**Autor:** Santiago Alcaraz · **Curso:** Desarrollo Web 2026-2 · **Entrega 3**
 
 Me incliné por Aura Store por su similitud a proyectos que he realizado anteriormente en otras materias de la universidad, por lo que el desarrollo de esta tienda online enfocada en la venta de sneakers puede ser mas ameno.
 
-En resumidas cuentas Aura Store es una tienda académica de sneakers para personas en Colombia que quieren comparar una selección de modelos por marca, estilo y talla. Reúne seis pares en cinco marcas y tres categorías, con precios de demostración en COP. Busca hacer la elección más clara mostrando color, referencia, disponibilidad por talla y una descripción de estilo.
+Aura Store conserva los seis pares, cinco marcas, tres categorías, imágenes y estilo visual de la primera entrega. Ahora el catálogo se consulta a una API y las solicitudes quedan guardadas en PostgreSQL, asociadas a una cuenta. No procesa cobros ni reservas automáticas; precios y existencias son de demostración. [Créditos de imágenes](docs/IMAGENES.md).
 
-Es una simulación: no hay ventas, reservas, correos enviados ni cobros. Los precios y existencias son ficticios. Las fotografías son referencias de terceros, puede ver los autores de las imagenes en: [créditos](docs/IMAGENES.md).
+## Enlaces y estado
 
-## Qué puede hacer el visitante
+- [Frontend en GitHub](https://github.com/SantiagoAlcaraz1101/aura-store).
+- [Backend en GitHub](https://github.com/SantiagoAlcaraz1101/aura-store-api).
+- [Sitio Vercel](https://aura-store-azure.vercel.app/): versión Next publicada y catálogo conectado a Render; comprobación completa de flujos pendiente.
+- [API pública en Render](https://aura-store-api.onrender.com/health): salud y catálogo verificados.
+- Versión nueva local: http://127.0.0.1:3000. API local: http://127.0.0.1:4000.
 
-- Explorar el catálogo de sneakers disponible
-- Combinar categoría, marca y búsqueda; ordenar por precio o nombre.
-- Consultar el detalle, elegir una talla disponible y añadirla a la bolsa.
-- Modificar cantidades respetando stock; recuperar bolsa y tema al recargar.
-- Preparar una solicitud con errores específicos junto a cada campo.
-- Usar menú móvil, tema oscuro y navegación con teclado.
+La migración se publicó en `main` y Vercel desplegó automáticamente el commit `dd3a543`. Las pruebas locales no equivalen a pruebas sobre el despliegue final.
 
-## Tecnologías y ejecución
+## Funciones
 
-HTML5, CSS3 y JavaScript ES Modules. Sin React, Bootstrap, Tailwind, jQuery ni otras dependencias de interfaz. Node se usa únicamente para desarrollo local y pruebas, no como backend de la tienda.
+El visitante explora el catálogo, combina búsqueda, categoría, marca y precios, cambia de página mediante la URL y consulta tallas. La bolsa y el tema se conservan en el navegador. El usuario registrado guarda solicitudes y consulta únicamente las suyas. El administrador crea, edita y elimina productos y consulta todas las solicitudes. El borrado pide confirmación; un producto con solicitudes se conserva para proteger el historial.
 
-Con Node.js 22 o superior (verificado con 24.15.0):
+## Ejecutar en local
+
+Requisitos: Node 24 y la API funcionando con PostgreSQL.
 
 ```bash
-node scripts/serve.cjs
+npm ci
+cp .env.example .env.local
+# Configurar las variables antes de iniciar.
+npm run dev
 ```
 
-Este comando abre [Aura Store local](http://127.0.0.1:4173). Mantén esa terminal abierta. No abras `index.html` con doble clic: los módulos requieren un servidor HTTP. Alternativa: una extensión de servidor estático como Live Server. No hay instalación de paquetes ni paso de compilación para el sitio.
+En PowerShell: `Copy-Item .env.example .env.local`. Abrir http://127.0.0.1:3000. Producción local: `npm run build` y `npm start`. Comprobación de tipos: `npm run typecheck`.
 
-## Estructura
+| Variable | Uso |
+|---|---|
+| NEXT_PUBLIC_API_HOST | Origen API sin `/api` final; local `http://localhost:4000` |
+| JWT_SECRET | Mismo secreto privado del backend; solo para el proxy del servidor Next |
 
-```text
-index.html
-css/styles.css
-js/
-  data.js                 # productos, marcas y categorías
-  store.js                # reglas puras de negocio
-  app.js                  # DOM, eventos y persistencia
-assets/images/            # fotografías locales y favicon
-scripts/serve.cjs         # servidor local sin dependencias
-tests/store.test.mjs      # pruebas con herramientas de Node
-docs/
-  IMAGENES.md              # procedencia de imágenes
-  validacion-html.json     # respuesta de W3C
-  capturas/               # capturas reales
-.gitignore
-```
+Configurar NEXT_PUBLIC_API_HOST antes de compilar porque Next lo incorpora al cliente. Nunca publicar JWT_SECRET ni ponerle el prefijo NEXT_PUBLIC. `.env.local` está excluido de Git.
 
-## Modelo del dominio
+## Cuentas demo del seed
 
-Marcas y categorías tienen muchos productos mediante `brandId` y `categoryId`. Cada producto tiene tallas con stock. Un cliente puede tener varios pedidos; los detalles relacionan cada pedido con un producto, talla y cantidad. En esta entrega, los productos son fixtures locales y la solicitud solo construye un ejemplo de cliente/pedido en memoria. La bolsa se conserva sin datos personales.
+| Rol | Correo | Contraseña |
+|---|---|---|
+| admin | admin@aura.demo | AuraAdmin!2026 |
+| user | user@aura.demo | AuraUser!2026 |
 
-**PERSONALIZA:** explica la diferencia entre «marca» y «categoría» usando Dunk y Samba. Describe qué parte cambiarías para consumir una API REST.
+Solo para el ambiente académico; se crean en el backend con SEED_DEMO_USERS=true. Usar datos de prueba.
 
-## Decisiones
+## Organización y decisiones
 
-### Flexbox y Grid
+`app/` define rutas que componen componentes. `src/features/` separa common, auth, products y orders, con tipos, servicios, hooks y componentes. Los componentes usan hooks; los servicios usan `common/http.ts`, el único lugar que llama a fetch. Si falla la API se muestra un error y se ofrece reintentar; no se sustituye el catálogo con datos locales.
 
-Flexbox alinea navegación, filtros y acciones. Grid distribuye hero, catálogo y formulario. El catálogo cambia entre una, dos y tres columnas según el ancho. Las variables CSS centralizan la paleta y permiten alternar el tema.
+El formulario de login valida los campos y pide a la API comprobar la contraseña con bcrypt. La API devuelve el usuario público y un JWT firmado con vencimiento. El navegador conserva el token en la cookie `aura_session`; al refrescar consulta `/api/auth/me`. El cliente HTTP adjunta `Authorization: Bearer` automáticamente. El proxy comprueba la cookie para las rutas privadas, y la API vuelve a verificar firma, expiración y permisos en cada operación.
 
-### JavaScript y validación
+La cookie es legible por JavaScript para enviar ese encabezado. Usa SameSite=Lax y Secure en HTTPS, pero **no es HttpOnly**: un ataque XSS podría robar el token. La protección real está también en la API. Logout elimina la cookie. Un 401 cierra la sesión y lleva al login; si ya está en login, muestra el error junto al campo sin recargarlo.
 
-los eventos modifican filtros, renderizan tarjetas, abren el menú y el detalle, actualizan la bolsa y validan solicitudes. El formulario exige campos completos, email válido, longitudes correctas y talla con stock para el sneaker elegido. Muestra mensajes junto al campo y no prepara la solicitud si hay errores.
+**401:** falta una sesión válida, por ejemplo borrar un producto sin token. **403:** hay sesión pero falta permiso, por ejemplo un user intenta borrar un sneaker. Ocultar Administración no basta: la API rechaza la petición aunque se envíe manualmente.
 
-### Responsive y accesibilidad
+## Evidencias y uso de IA
 
-Base factual: la interfaz se verificó a 320, 390, 768 y 1440 px, sin overflow horizontal. Incluye enlaces semánticos, etiquetas, alt descriptivos, focos visibles, estados ARIA, diálogos nativos y `prefers-reduced-motion`.
+Se verificaron compilación, tipos, paginación local, sesión tras refrescar, solicitud guardada, redirección de user fuera de Administración y logout. La API tiene 11 resultados de pruebas automatizadas y [CI aprobado](https://github.com/SantiagoAlcaraz1101/aura-store-api/actions/runs/40808114436). [Avances y pendientes](docs/AVANCES-PROGRAMADOS.md).
 
-### Uso de inteligencia artificial
+![Solicitud local guardada](docs/capturas/entrega-3/solicitud-local.png)
 
-La IA fué de mucha ayuda para la primera etapa de desarrollo de **Aura Store**, Ayudó a realizar las pruebas y a mejorar la calidad de diseño de la página, llevandola a otro nivel visualmente.
+**Captura Network pendiente:** debe mostrar una petición protegida real con Authorization. La imagen anterior no reemplaza esa evidencia. Las nueve secuencias del docente deben comprobarse sobre los despliegues definitivos.
 
-## Capturas reales
+Codex apoyó la migración, implementación, pruebas y documentación. Se corrigió el límite de contraseña por bytes, una dependencia vulnerable y la conservación de marca/categoría al editar con opciones cargadas desde la API. El autor debe revisar y poder demostrar estas decisiones; no se inventan experiencias personales ni funciones.
 
-### Escritorio
-
-![Aura Store en escritorio](docs/capturas/escritorio-vista.png)
-
-### Móvil
-
-![Aura Store en móvil](docs/capturas/movil.png)
-
-También hay [captura de la página completa](docs/capturas/escritorio.png), [catálogo móvil](docs/capturas/catalogo-movil.png), [tablet](docs/capturas/tablet.png) y [modo oscuro](docs/capturas/oscuro.png).
+La versión original está en `legacy/entrega-1/`, fuera de Next. Se conserva el [README personal original](docs/ENTREGA-1-README.md). El informe para la sustentación está en `docs/INFORME-SUSTENTACION.md`.
